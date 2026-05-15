@@ -50,7 +50,7 @@ Before running VPlayer, ensure you have the following installed:
    mvn exec:java -Dexec.mainClass="com.vplayer.Main"
    ```
 
-## ⌨️ Keyboard Shortcuts
+## Keyboard Shortcuts
 
 | Shortcut | Action |
 | :--- | :--- |
@@ -62,7 +62,7 @@ Before running VPlayer, ensure you have the following installed:
 | `F` | Toggle Fullscreen |
 | `M` | Mute |
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 V_Player/
@@ -82,10 +82,7 @@ V_Player/
 └── pom.xml                         # Maven dependencies
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
-
-This project is licensed under the MIT License.
