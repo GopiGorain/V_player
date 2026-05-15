@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vplayer.ui.controllers.LibraryController"
+      spacing="20" styleClass="library-root">
+
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <Label text="Media Library" styleClass="view-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnOpenFile" text="Open File" styleClass="action-button">
+            <graphic><FontIcon iconLiteral="fas-file-video"/></graphic>
+        </Button>
+        <Button fx:id="btnOpenFolder" text="Open Folder" styleClass="action-button">
+            <graphic><FontIcon iconLiteral="fas-folder-open"/></graphic>
+        </Button>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="library-scroll">
+        <FlowPane fx:id="videoGrid" hgap="20" vgap="20" styleClass="video-grid">
+            <!-- Video thumbnails will be added here -->
+        </FlowPane>
+    </ScrollPane>
+
+</VBox>

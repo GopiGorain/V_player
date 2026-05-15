@@ -1,0 +1,3 @@
+@echo off
+echo Starting VPlayer...
+.\apache-maven-3.9.15\bin\mvn.cmd compile javafx:run

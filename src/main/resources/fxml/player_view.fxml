@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.vplayer.ui.controllers.PlayerController"
+           styleClass="player-root"
+           fx:id="playerRoot">
+
+    <StackPane fx:id="videoContainer" styleClass="video-container"/>
+
+    <VBox fx:id="controlsOverlay" alignment="BOTTOM_CENTER" styleClass="controls-overlay">
+        <VBox styleClass="controls-bar" spacing="5">
+            <Slider fx:id="seekSlider" styleClass="seek-slider" min="0" max="100" value="0"/>
+            
+            <HBox spacing="15" alignment="CENTER_LEFT" styleClass="controls-buttons">
+                <Button fx:id="btnPlayPause" styleClass="icon-button">
+                    <graphic><FontIcon fx:id="playPauseIcon" iconLiteral="fas-play"/></graphic>
+                </Button>
+                
+                <Button fx:id="btnPrevious" styleClass="icon-button">
+                    <graphic><FontIcon iconLiteral="fas-step-backward"/></graphic>
+                </Button>
+                
+                <Button fx:id="btnNext" styleClass="icon-button">
+                    <graphic><FontIcon iconLiteral="fas-step-forward"/></graphic>
+                </Button>
+                
+                <Label fx:id="lblTime" text="00:00 / 00:00" styleClass="time-label"/>
+                
+                <Region HBox.hgrow="ALWAYS"/>
+                
+                <MenuButton fx:id="btnSubtitle" styleClass="icon-menu-button">
+                    <graphic><FontIcon iconLiteral="fas-closed-captioning"/></graphic>
+                </MenuButton>
+                
+                <MenuButton fx:id="btnAudio" styleClass="icon-menu-button">
+                    <graphic><FontIcon iconLiteral="fas-volume-up"/></graphic>
+                </MenuButton>
+                
+                <MenuButton fx:id="btnSpeed" text="1x" styleClass="text-menu-button">
+                </MenuButton>
+                
+                <Slider fx:id="volumeSlider" prefWidth="100" min="0" max="150" value="100"/>
+                
+                <Button fx:id="btnMinimize" styleClass="icon-button">
+                    <graphic><FontIcon iconLiteral="fas-window-minimize"/></graphic>
+                </Button>
+                <Button fx:id="btnFullscreen" styleClass="icon-button">
+                    <graphic><FontIcon iconLiteral="fas-expand"/></graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </VBox>
+
+</StackPane>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:id="root"
+      fx:controller="com.vplayer.ui.controllers.components.VideoCardController"
+      styleClass="video-card" prefWidth="200" spacing="10"
+      onMouseClicked="#onCardClicked">
+
+    <StackPane styleClass="thumbnail-container" prefHeight="120">
+        <FontIcon iconLiteral="fas-play-circle" iconSize="40" styleClass="play-overlay"/>
+    </StackPane>
+
+    <VBox spacing="2">
+        <Label fx:id="lblTitle" text="Video Title" styleClass="video-title-label"/>
+        <Label fx:id="lblDuration" text="00:00:00" styleClass="video-duration-label"/>
+    </VBox>
+
+</VBox>

@@ -1,0 +1,69 @@
+.library-root {
+    -fx-padding: 30;
+    -fx-background-color: #0c0c0c;
+}
+
+.view-title {
+    -fx-text-fill: #EEEEEE;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.action-button {
+    -fx-background-color: #00ADB5;
+    -fx-text-fill: #EEEEEE;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.action-button:hover {
+    -fx-background-color: #008f95;
+}
+
+.library-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.video-grid {
+    -fx-padding: 10 0;
+}
+
+.video-card {
+    -fx-background-color: #1a1a1a;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s;
+}
+
+.video-card:hover {
+    -fx-background-color: #2a2a2a;
+    -fx-translate-y: -5;
+}
+
+.thumbnail-container {
+    -fx-background-color: #333333;
+    -fx-background-radius: 8;
+}
+
+.play-overlay {
+    -fx-icon-color: rgba(255, 255, 255, 0.3);
+}
+
+.video-card:hover .play-overlay {
+    -fx-icon-color: #00ADB5;
+}
+
+.video-title-label {
+    -fx-text-fill: #EEEEEE;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.video-duration-label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 12px;
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vplayer.ui.controllers.VaultController"
+      spacing="20" styleClass="library-root">
+
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <Label text="Private Vault" styleClass="view-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnLockVault" text="Lock Vault" styleClass="action-button">
+            <graphic><FontIcon iconLiteral="fas-lock"/></graphic>
+        </Button>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="library-scroll">
+        <FlowPane fx:id="videoGrid" hgap="20" vgap="20" styleClass="video-grid">
+            <!-- Vaulted video thumbnails will be added here -->
+        </FlowPane>
+    </ScrollPane>
+
+</VBox>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.vplayer.ui.controllers.MainController"
+            prefHeight="720.0" prefWidth="1280.0"
+            styleClass="main-container">
+
+    <left>
+        <VBox fx:id="sidebar" styleClass="sidebar" prefWidth="250.0" spacing="10">
+            <Label text="VPLAYER" styleClass="app-title"/>
+            
+            <Button fx:id="btnLibrary" text="Media Library" styleClass="nav-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-film"/>
+                </graphic>
+            </Button>
+            
+            <Button fx:id="btnPlaylists" text="Playlists" styleClass="nav-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-list"/>
+                </graphic>
+            </Button>
+            
+            <Button fx:id="btnVault" text="Private Vault" styleClass="nav-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-lock"/>
+                </graphic>
+            </Button>
+            
+            <Region VBox.vgrow="ALWAYS"/>
+            
+            <Button fx:id="btnSettings" text="Settings" styleClass="nav-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-cog"/>
+                </graphic>
+            </Button>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area">
+            <!-- Dynamic content will be loaded here -->
+            <Label text="Select a video to play" styleClass="placeholder-text"/>
+        </StackPane>
+    </center>
+
+</BorderPane>
