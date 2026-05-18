@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
 <?import org.kordamp.ikonli.javafx.*?>
 
 <StackPane xmlns="http://javafx.com/javafx"
@@ -11,10 +12,22 @@
            fx:id="playerRoot">
 
     <StackPane fx:id="videoContainer" styleClass="video-container"/>
+    
+    <ImageView fx:id="previewImage" preserveRatio="true" mouseTransparent="true" visible="false" />
 
     <VBox fx:id="controlsOverlay" alignment="BOTTOM_CENTER" styleClass="controls-overlay">
         <VBox styleClass="controls-bar" spacing="5">
-            <Slider fx:id="seekSlider" styleClass="seek-slider" min="0" max="100" value="0"/>
+            <StackPane alignment="BOTTOM_LEFT">
+                <Slider fx:id="seekSlider" styleClass="seek-slider" min="0" max="100" value="0"/>
+                <StackPane fx:id="hoverPreviewContainer" styleClass="hover-preview-container" visible="false" managed="false">
+                    <VBox alignment="CENTER" spacing="5" styleClass="hover-preview-box">
+                        <StackPane styleClass="hover-preview-image-container">
+                            <ImageView fx:id="hoverPreviewImage" fitWidth="160" fitHeight="90" preserveRatio="true"/>
+                        </StackPane>
+                        <Label fx:id="lblHoverTime" text="00:00:00" styleClass="hover-preview-time"/>
+                    </VBox>
+                </StackPane>
+            </StackPane>
             
             <HBox spacing="15" alignment="CENTER_LEFT" styleClass="controls-buttons">
                 <Button fx:id="btnPlayPause" styleClass="icon-button">

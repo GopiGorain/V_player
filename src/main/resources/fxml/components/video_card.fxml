@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
 <?import org.kordamp.ikonli.javafx.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
@@ -12,6 +13,7 @@
       onMouseClicked="#onCardClicked">
 
     <StackPane styleClass="thumbnail-container" prefHeight="120">
+        <ImageView fx:id="imgThumbnail" preserveRatio="true" fitWidth="180" fitHeight="100" />
         <FontIcon iconLiteral="fas-play-circle" iconSize="40" styleClass="play-overlay"/>
     </StackPane>
 

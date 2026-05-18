@@ -1,25 +1,28 @@
 .library-root {
     -fx-padding: 30;
-    -fx-background-color: #0c0c0c;
+    -fx-background-color: radial-gradient(center 50% 50%, radius 120%, #15151c 0%, #0c0c0e 100%);
 }
 
 .view-title {
-    -fx-text-fill: #EEEEEE;
-    -fx-font-size: 24px;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 26px;
     -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0, 0, 2);
 }
 
 .action-button {
-    -fx-background-color: #00ADB5;
-    -fx-text-fill: #EEEEEE;
+    -fx-background-color: linear-gradient(to right, #00ADB5, #00F2FE);
+    -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
-    -fx-padding: 10 20;
-    -fx-background-radius: 5;
+    -fx-padding: 10 22;
+    -fx-background-radius: 8;
     -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 242, 254, 0.3), 8, 0, 0, 3);
 }
 
 .action-button:hover {
-    -fx-background-color: #008f95;
+    -fx-background-color: linear-gradient(to right, #00c6cf, #33f4ff);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 242, 254, 0.5), 12, 0, 0, 3);
 }
 
 .library-scroll {
@@ -28,42 +31,110 @@
 }
 
 .video-grid {
-    -fx-padding: 10 0;
+    -fx-padding: 15 0;
 }
 
 .video-card {
-    -fx-background-color: #1a1a1a;
-    -fx-background-radius: 10;
-    -fx-padding: 10;
+    -fx-background-color: rgba(30, 30, 35, 0.6);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.06);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-padding: 12;
     -fx-cursor: hand;
-    -fx-transition: all 0.3s;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
 }
 
 .video-card:hover {
-    -fx-background-color: #2a2a2a;
-    -fx-translate-y: -5;
+    -fx-background-color: rgba(45, 45, 55, 0.85);
+    -fx-border-color: rgba(0, 242, 254, 0.4);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 242, 254, 0.25), 18, 0, 0, 6);
 }
 
 .thumbnail-container {
-    -fx-background-color: #333333;
+    -fx-background-color: #1a1a24;
     -fx-background-radius: 8;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
 }
 
 .play-overlay {
-    -fx-icon-color: rgba(255, 255, 255, 0.3);
+    -fx-icon-color: rgba(255, 255, 255, 0.35);
 }
 
 .video-card:hover .play-overlay {
-    -fx-icon-color: #00ADB5;
+    -fx-icon-color: #00F2FE;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 242, 254, 0.6), 10, 0, 0, 0);
 }
 
 .video-title-label {
-    -fx-text-fill: #EEEEEE;
+    -fx-text-fill: #ffffff;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
 }
 
 .video-duration-label {
-    -fx-text-fill: #888888;
+    -fx-text-fill: #888899;
     -fx-font-size: 12px;
+}
+
+/* Private Vault Login Interface */
+.vault-login-container {
+    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, #15151c 0%, #0c0c0e 100%);
+    -fx-padding: 40;
+}
+
+.vault-lock-icon {
+    -fx-icon-color: linear-gradient(to bottom, #FF416C, #FF4B2B); /* Red-Orange security gradient */
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 75, 43, 0.4), 15, 0, 0, 0);
+}
+
+.vault-status-label {
+    -fx-text-fill: #EEEEEE;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 2);
+}
+
+.vault-instruction-label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 13px;
+}
+
+.pin-field {
+    -fx-background-color: #1e1e24;
+    -fx-text-fill: #EEEEEE;
+    -fx-border-color: #33333f;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+}
+
+.pin-field:focused {
+    -fx-border-color: #00F2FE;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 242, 254, 0.3), 8, 0, 0, 0);
+}
+
+.unlock-button {
+    -fx-background-color: linear-gradient(to right, #00ADB5, #00F2FE);
+    -fx-text-fill: #EEEEEE;
+    -fx-font-weight: bold;
+    -fx-padding: 10 25;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 242, 254, 0.3), 10, 0, 0, 3);
+}
+
+.unlock-button:hover {
+    -fx-background-color: linear-gradient(to right, #00c6cf, #33f4ff);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 242, 254, 0.5), 15, 0, 0, 3);
+}
+
+.error-label {
+    -fx-text-fill: #ff4757;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
 }

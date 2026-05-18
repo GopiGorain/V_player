@@ -18,8 +18,12 @@ public class LibraryScanner {
             "mp4", "mkv", "avi", "mov", "webm", "flv", "hevc", "av1", "mpeg"
     ));
 
+    private final FFmpegService ffmpegService = new FFmpegService();
+    private final String thumbnailDir = System.getProperty("user.home") + "/.vplayer/thumbnails";
+
     public LibraryScanner() {
         this.videoRepository = new VideoRepository();
+        new File(thumbnailDir).mkdirs();
     }
 
     public void scanFolder(File folder) {
@@ -42,9 +46,16 @@ public class LibraryScanner {
     }
 
     private void processVideoFile(File file) {
-        // Here we could use VLCJ to get the duration, but for now we'll just save the path
         Video video = new Video(file.getAbsolutePath(), file.getName(), 0);
         videoRepository.upsert(video);
+        
+        // Generate thumbnail
+        String thumbName = Integer.toHexString(file.getAbsolutePath().hashCode()) + ".jpg";
+        File thumbFile = new File(thumbnailDir, thumbName);
+        if (!thumbFile.exists()) {
+            ffmpegService.generateThumbnail(file.getAbsolutePath(), thumbFile.getAbsolutePath());
+        }
+        
         logger.debug("Found video: " + file.getName());
     }
 }

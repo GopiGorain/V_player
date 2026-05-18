@@ -45,13 +45,24 @@ public class LibraryController {
         videoGrid.getChildren().clear();
         List<Video> videos = videoRepository.getAllNonVaulted();
         
+        double delay = 0;
         for (Video video : videos) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/components/video_card.fxml"));
                 Parent card = loader.load();
                 VideoCardController controller = loader.getController();
                 controller.setVideo(video);
+                
+                // Add card and fade it in smoothly
+                card.setOpacity(0.0);
                 videoGrid.getChildren().add(card);
+                
+                javafx.animation.FadeTransition ft = new javafx.animation.FadeTransition(javafx.util.Duration.millis(350), card);
+                ft.setToValue(1.0);
+                ft.setDelay(javafx.util.Duration.millis(delay));
+                ft.play();
+                
+                delay += 35; // Stagger delay
             } catch (IOException e) {
                 logger.error("Failed to load video card component", e);
             }

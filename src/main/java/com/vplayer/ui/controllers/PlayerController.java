@@ -51,6 +51,21 @@ public class PlayerController {
     private Button btnMinimize;
     @FXML
     private Button btnFullscreen;
+    @FXML
+    private ImageView previewImage;
+    
+    @FXML
+    private StackPane hoverPreviewContainer;
+    @FXML
+    private ImageView hoverPreviewImage;
+    @FXML
+    private Label lblHoverTime;
+
+    private final com.vplayer.services.FFmpegService ffmpegService = new com.vplayer.services.FFmpegService();
+    private static final int NUM_PREVIEW_THUMBNAILS = 50;
+    private final List<javafx.scene.image.Image> previewThumbnails = new java.util.ArrayList<>();
+    private boolean previewsLoaded = false;
+
     private VideoPlayer videoPlayer;
     private boolean isSeeking = false;
     private PauseTransition hideControlsTransition;
@@ -73,18 +88,23 @@ public class PlayerController {
         // Ensure video fills container
         videoView.fitWidthProperty().bind(videoContainer.widthProperty());
         videoView.fitHeightProperty().bind(videoContainer.heightProperty());
+        
+        // Ensure preview fills container
+        previewImage.fitWidthProperty().bind(videoContainer.widthProperty());
+        previewImage.fitHeightProperty().bind(videoContainer.heightProperty());
 
         setupListeners();
         setupSpeedMenu();
         
-        hideControlsTransition = new PauseTransition(Duration.seconds(3));
+        // Set initial volume
+        volumeSlider.setValue(50);
+        videoPlayer.getMediaPlayer().audio().setVolume(50);
+        
+        hideControlsTransition = new PauseTransition(Duration.seconds(2));
         hideControlsTransition.setOnFinished(e -> {
-            if (playerRoot.getScene() != null && playerRoot.getScene().getWindow() instanceof javafx.stage.Stage) {
-                javafx.stage.Stage stage = (javafx.stage.Stage) playerRoot.getScene().getWindow();
-                if (stage.isFullScreen()) {
-                    controlsOverlay.setVisible(false);
-                    playerRoot.setCursor(javafx.scene.Cursor.NONE);
-                }
+            if (videoPlayer.getMediaPlayer().status().isPlaying()) {
+                controlsOverlay.setVisible(false);
+                playerRoot.setCursor(javafx.scene.Cursor.NONE);
             }
         });
 
@@ -171,11 +191,45 @@ public class PlayerController {
             videoPlayer.getMediaPlayer().audio().setVolume(newVal.intValue());
         });
 
-        seekSlider.setOnMousePressed(e -> isSeeking = true);
-        seekSlider.setOnMouseReleased(e -> {
-            videoPlayer.seek((float) (seekSlider.getValue() / 100.0));
-            isSeeking = false;
+        seekSlider.setOnMousePressed(e -> {
+            isSeeking = true;
+            double mouseX = e.getX();
+            double sliderWidth = seekSlider.getWidth();
+            if (sliderWidth > 0) {
+                double pct = mouseX / sliderWidth;
+                pct = Math.max(0.0, Math.min(1.0, pct));
+                videoPlayer.seek((float) pct);
+                seekSlider.setValue(pct * 100);
+            }
         });
+
+        seekSlider.setOnMouseDragged(e -> {
+            isSeeking = true;
+            double mouseX = e.getX();
+            double sliderWidth = seekSlider.getWidth();
+            if (sliderWidth > 0) {
+                double pct = mouseX / sliderWidth;
+                pct = Math.max(0.0, Math.min(1.0, pct));
+                videoPlayer.seek((float) pct);
+                seekSlider.setValue(pct * 100);
+                handleSeekSliderHover(e);
+            }
+        });
+
+        seekSlider.setOnMouseReleased(e -> {
+            isSeeking = false;
+            double mouseX = e.getX();
+            double sliderWidth = seekSlider.getWidth();
+            if (sliderWidth > 0) {
+                double pct = mouseX / sliderWidth;
+                pct = Math.max(0.0, Math.min(1.0, pct));
+                videoPlayer.seek((float) pct);
+            }
+            handleSeekSliderExit(null);
+        });
+
+        seekSlider.setOnMouseMoved(this::handleSeekSliderHover);
+        seekSlider.setOnMouseExited(this::handleSeekSliderExit);
 
         videoPlayer.getMediaPlayer().events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
@@ -193,7 +247,30 @@ public class PlayerController {
             @Override
             public void playing(MediaPlayer mediaPlayer) {
                 System.out.println("MediaPlayer: Playing event triggered");
+                // Explicitly ensure audio is enabled and volume is set
+                mediaPlayer.audio().setMute(false);
+                mediaPlayer.audio().setVolume((int) volumeSlider.getValue());
+                
+                // Debug audio tracks
+                int trackCount = mediaPlayer.audio().trackCount();
+                System.out.println("Audio track count: " + trackCount);
+                if (trackCount > 0) {
+                    System.out.println("Current audio track: " + mediaPlayer.audio().track());
+                } else {
+                    System.err.println("WARNING: No audio tracks detected!");
+                }
+
+                long duration = mediaPlayer.status().length();
+                if (duration > 0 && currentPath != null) {
+                    String hash = Integer.toHexString(currentPath.hashCode());
+                    String outputDir = System.getProperty("user.home") + "/.vplayer/previews/" + hash;
+                    ffmpegService.generateHoverPreviews(currentPath, outputDir, duration, NUM_PREVIEW_THUMBNAILS, () -> {
+                        Platform.runLater(() -> loadPreviewThumbnails(outputDir));
+                    });
+                }
+                
                 Platform.runLater(() -> {
+                    previewImage.setVisible(false);
                     playPauseIcon.setIconLiteral("fas-pause");
                     populateTracks();
                 });
@@ -225,11 +302,15 @@ public class PlayerController {
             @Override
             public void opening(MediaPlayer mediaPlayer) {
                 System.out.println("MediaPlayer: Opening...");
+                Platform.runLater(() -> previewImage.setVisible(false));
             }
 
             @Override
             public void buffering(MediaPlayer mediaPlayer, float newCache) {
                 System.out.println("MediaPlayer: Buffering " + newCache + "%");
+                if (newCache > 0) {
+                    Platform.runLater(() -> previewImage.setVisible(false));
+                }
             }
         });
     }
@@ -301,6 +382,32 @@ public class PlayerController {
                 .orElse(null);
 
         this.currentPath = path;
+        
+        // Clear previous previews
+        previewsLoaded = false;
+        previewThumbnails.clear();
+        
+        // Pre-load hover previews if they already exist
+        String hash = Integer.toHexString(path.hashCode());
+        String outputDir = System.getProperty("user.home") + "/.vplayer/previews/" + hash;
+        java.io.File dir = new java.io.File(outputDir);
+        if (dir.exists()) {
+            java.io.File[] files = dir.listFiles((d, name) -> name.startsWith("img_") && name.endsWith(".jpg"));
+            if (files != null && files.length >= NUM_PREVIEW_THUMBNAILS) {
+                loadPreviewThumbnails(outputDir);
+            }
+        }
+        
+        // Show preview image
+        String thumbnailDir = System.getProperty("user.home") + "/.vplayer/thumbnails";
+        String thumbName = Integer.toHexString(path.hashCode()) + ".jpg";
+        java.io.File thumbFile = new java.io.File(thumbnailDir, thumbName);
+        if (thumbFile.exists()) {
+            previewImage.setImage(new javafx.scene.image.Image(thumbFile.toURI().toString()));
+            previewImage.setVisible(true);
+        } else {
+            previewImage.setVisible(false);
+        }
 
         if (video != null && video.getLastPosition() > 0.01 && video.getLastPosition() < 0.95) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -351,5 +458,59 @@ public class PlayerController {
             videoPlayer.stop();
             videoPlayer.release();
         }
+    }
+
+    private void loadPreviewThumbnails(String dirPath) {
+        java.io.File dir = new java.io.File(dirPath);
+        if (!dir.exists() || !dir.isDirectory()) return;
+        
+        java.io.File[] files = dir.listFiles((d, name) -> name.startsWith("img_") && name.endsWith(".jpg"));
+        if (files == null || files.length == 0) return;
+        
+        java.util.Arrays.sort(files, java.util.Comparator.comparing(java.io.File::getName));
+        
+        previewThumbnails.clear();
+        for (java.io.File file : files) {
+            previewThumbnails.add(new javafx.scene.image.Image(file.toURI().toString()));
+        }
+        previewsLoaded = true;
+        System.out.println("Loaded " + previewThumbnails.size() + " hover preview thumbnails");
+    }
+
+    private void handleSeekSliderHover(javafx.scene.input.MouseEvent e) {
+        double mouseX = e.getX();
+        double sliderWidth = seekSlider.getWidth();
+        if (sliderWidth <= 0) return;
+        
+        double pct = mouseX / sliderWidth;
+        pct = Math.max(0.0, Math.min(1.0, pct));
+        
+        hoverPreviewContainer.setVisible(true);
+        
+        long totalDuration = videoPlayer.getMediaPlayer().status().length();
+        long hoveredTime = (long) (pct * totalDuration);
+        lblHoverTime.setText(formatTime(hoveredTime));
+        
+        if (previewsLoaded && !previewThumbnails.isEmpty()) {
+            int numImages = previewThumbnails.size();
+            int idx = (int) Math.round(pct * (numImages - 1));
+            idx = Math.max(0, Math.min(numImages - 1, idx));
+            hoverPreviewImage.setImage(previewThumbnails.get(idx));
+        } else {
+            hoverPreviewImage.setImage(null);
+        }
+        
+        double containerWidth = hoverPreviewContainer.getBoundsInLocal().getWidth();
+        if (containerWidth <= 0) {
+            containerWidth = 170; // fallback default
+        }
+        double posX = mouseX - (containerWidth / 2.0);
+        posX = Math.max(0, Math.min(sliderWidth - containerWidth, posX));
+        hoverPreviewContainer.setTranslateX(posX);
+        hoverPreviewContainer.setTranslateY(-120); // Push it up above the slider track
+    }
+
+    private void handleSeekSliderExit(javafx.scene.input.MouseEvent e) {
+        hoverPreviewContainer.setVisible(false);
     }
 }

@@ -21,6 +21,8 @@ public class VideoCardController {
     @FXML
     private Label lblDuration;
     @FXML
+    private javafx.scene.image.ImageView imgThumbnail;
+    @FXML
     private VBox root;
 
     private Video video;
@@ -29,12 +31,33 @@ public class VideoCardController {
         this.video = video;
         lblTitle.setText(video.getTitle());
         lblDuration.setText(formatDuration(video.getDuration()));
+        
+        // Load thumbnail
+        String thumbnailDir = System.getProperty("user.home") + "/.vplayer/thumbnails";
+        String thumbName = Integer.toHexString(video.getPath().hashCode()) + ".jpg";
+        java.io.File thumbFile = new java.io.File(thumbnailDir, thumbName);
+        if (thumbFile.exists()) {
+            imgThumbnail.setImage(new javafx.scene.image.Image(thumbFile.toURI().toString()));
+        }
+        
         setupContextMenu();
     }
 
     @FXML
     public void initialize() {
-        // Handled by setVideo usually
+        // Smooth scale-on-hover micro-animations
+        root.setOnMouseEntered(e -> {
+            javafx.animation.ScaleTransition st = new javafx.animation.ScaleTransition(javafx.util.Duration.millis(150), root);
+            st.setToX(1.03);
+            st.setToY(1.03);
+            st.play();
+        });
+        root.setOnMouseExited(e -> {
+            javafx.animation.ScaleTransition st = new javafx.animation.ScaleTransition(javafx.util.Duration.millis(150), root);
+            st.setToX(1.0);
+            st.setToY(1.0);
+            st.play();
+        });
     }
 
     private void setupContextMenu() {
